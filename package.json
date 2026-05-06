@@ -14,7 +14,18 @@
     "typecheck": "tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p apps/mobile/tsconfig.json"
   },
   "overrides": {
-    "ajv": "^8.12.0"
+    "ajv": "^8.12.0",
+    "metro": "~0.80.0",
+    "metro-cache": "~0.80.0",
+    "metro-config": "~0.80.0",
+    "metro-core": "~0.80.0",
+    "metro-file-map": "~0.80.0",
+    "metro-runtime": "~0.80.0",
+    "metro-source-map": "~0.80.0",
+    "metro-transform-plugins": "~0.80.0",
+    "metro-transform-worker": "~0.80.0",
+    "metro-babel-transformer": "~0.80.0",
+    "metro-resolver": "~0.80.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.0",
