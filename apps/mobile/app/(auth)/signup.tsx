@@ -1,112 +1,75 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
-import { Link } from 'expo-router';
-import * as Localization from 'expo-localization';
-import { useAuthStore } from '@/stores/auth-store';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function SignupScreen() {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const signup = useAuthStore((s) => s.signup);
-
-  const handleSignup = async () => {
-    if (!name.trim()) {
-      Alert.alert('Error', 'Please enter your name');
-      return;
-    }
-    if (!email.trim() && !phone.trim()) {
-      Alert.alert('Error', 'Please enter an email or phone number');
-      return;
-    }
-    if (password.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await signup({
-        name: name.trim(),
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
-        password,
-        timezone: Localization.getCalendars()[0]?.timeZone || 'UTC',
-      });
-    } catch (err) {
-      Alert.alert('Sign Up Failed', err instanceof Error ? err.message : 'Please try again');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
-    <ScrollView className="flex-1 bg-white" contentContainerClassName="px-6 py-16 justify-center">
-      <Text className="text-3xl font-bold text-gray-900 mb-2">Create Account</Text>
-      <Text className="text-base text-gray-500 mb-8">
-        Start managing your eye care medication schedule
-      </Text>
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-4"
-        placeholder="Full name"
-        value={name}
-        onChangeText={setName}
-        accessibilityLabel="Full name"
-      />
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-4"
-        placeholder="Email (optional if phone provided)"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        accessibilityLabel="Email address"
-      />
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-4"
-        placeholder="Phone (optional if email provided)"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
-        accessibilityLabel="Phone number"
-      />
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-6"
-        placeholder="Password (min 8 characters)"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        accessibilityLabel="Password"
-      />
-
+    <KeyboardAvoidingView
+      className="flex-1 bg-white"
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <TouchableOpacity
-        className="bg-primary-500 rounded-xl py-4 items-center min-h-[52px] mb-4"
-        onPress={handleSignup}
-        disabled={loading}
-        accessibilityLabel="Create account"
-        accessibilityRole="button"
+        onPress={() => router.back()}
+        className="pt-14 px-6 pb-2"
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text className="text-white text-lg font-semibold">Create Account</Text>
-        )}
+        <Text className="text-blue-500 text-base">← Back</Text>
       </TouchableOpacity>
 
-      <Link href="/(auth)/login" asChild>
-        <TouchableOpacity className="py-4 items-center min-h-[44px]">
-          <Text className="text-gray-600">
-            Already have an account?{' '}
-            <Text className="text-primary-500 font-semibold">Sign In</Text>
-          </Text>
+      <ScrollView className="flex-1 px-8 pt-6" keyboardShouldPersistTaps="handled">
+        <Text className="text-3xl font-bold text-gray-900 mb-2">Create account</Text>
+        <Text className="text-gray-500 mb-10">Start your eye care journey</Text>
+
+        <Text className="text-sm font-medium text-gray-700 mb-2">Full name</Text>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 mb-5"
+          placeholder="Ahaan"
+          placeholderTextColor="#9ca3af"
+          value={name}
+          onChangeText={setName}
+        />
+
+        <Text className="text-sm font-medium text-gray-700 mb-2">Email</Text>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 mb-5"
+          placeholder="you@example.com"
+          placeholderTextColor="#9ca3af"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <Text className="text-sm font-medium text-gray-700 mb-2">Password</Text>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 mb-10"
+          placeholder="Min 8 characters"
+          placeholderTextColor="#9ca3af"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity
+          onPress={() => router.replace('/(app)')}
+          className="bg-blue-500 rounded-2xl py-4 items-center mb-6"
+          activeOpacity={0.85}
+        >
+          <Text className="text-white text-base font-semibold">Create account</Text>
         </TouchableOpacity>
-      </Link>
-    </ScrollView>
+
+        <View className="flex-row justify-center pb-12">
+          <Text className="text-gray-500 text-sm">Already have an account? </Text>
+          <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
+            <Text className="text-blue-500 text-sm font-semibold">Sign in</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

@@ -1,93 +1,69 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { Link } from 'expo-router';
-import { useAuthStore } from '@/stores/auth-store';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
-  const [identifier, setIdentifier] = useState('');
+  const router = useRouter();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login, enterGuestMode } = useAuthStore();
-
-  const handleLogin = async () => {
-    if (!identifier.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please enter your email/phone and password');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await login(identifier.trim(), password);
-    } catch (err) {
-      Alert.alert('Login Failed', err instanceof Error ? err.message : 'Please try again');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
-    <View className="flex-1 bg-white px-6 justify-center">
-      <Text className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</Text>
-      <Text className="text-base text-gray-500 mb-8">
-        Sign in to manage your eye care reminders
-      </Text>
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-4"
-        placeholder="Email or phone number"
-        value={identifier}
-        onChangeText={setIdentifier}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        accessibilityLabel="Email or phone number"
-      />
-
-      <TextInput
-        className="border border-gray-300 rounded-xl px-4 py-4 text-base mb-2"
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        accessibilityLabel="Password"
-      />
-
-      <Link href="/(auth)/forgot-password" asChild>
-        <TouchableOpacity className="self-end mb-6 min-h-[44px] justify-center">
-          <Text className="text-primary-500 text-sm">Forgot password?</Text>
-        </TouchableOpacity>
-      </Link>
-
+    <KeyboardAvoidingView
+      className="flex-1 bg-white"
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <TouchableOpacity
-        className="bg-primary-500 rounded-xl py-4 items-center min-h-[52px] mb-4"
-        onPress={handleLogin}
-        disabled={loading}
-        accessibilityLabel="Sign in"
-        accessibilityRole="button"
+        onPress={() => router.back()}
+        className="pt-14 px-6 pb-2"
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text className="text-white text-lg font-semibold">Sign In</Text>
-        )}
+        <Text className="text-blue-500 text-base">← Back</Text>
       </TouchableOpacity>
 
-      <Link href="/(auth)/signup" asChild>
-        <TouchableOpacity className="py-4 items-center min-h-[44px]">
-          <Text className="text-gray-600">
-            Don&apos;t have an account?{' '}
-            <Text className="text-primary-500 font-semibold">Sign Up</Text>
-          </Text>
-        </TouchableOpacity>
-      </Link>
+      <View className="flex-1 px-8 pt-6">
+        <Text className="text-3xl font-bold text-gray-900 mb-2">Welcome back</Text>
+        <Text className="text-gray-500 mb-10">Sign in to your account</Text>
 
-      <TouchableOpacity
-        className="py-4 items-center min-h-[44px]"
-        onPress={enterGuestMode}
-        accessibilityLabel="Continue as guest"
-        accessibilityRole="button"
-      >
-        <Text className="text-gray-400">Continue as Guest</Text>
-      </TouchableOpacity>
-    </View>
+        <Text className="text-sm font-medium text-gray-700 mb-2">Email</Text>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 mb-5"
+          placeholder="you@example.com"
+          placeholderTextColor="#9ca3af"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <Text className="text-sm font-medium text-gray-700 mb-2">Password</Text>
+        <TextInput
+          className="border border-gray-200 rounded-xl px-4 py-3.5 text-gray-900 mb-2"
+          placeholder="••••••••"
+          placeholderTextColor="#9ca3af"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity className="self-end mb-8">
+          <Text className="text-blue-500 text-sm">Forgot password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.replace('/(app)')}
+          className="bg-blue-500 rounded-2xl py-4 items-center"
+          activeOpacity={0.85}
+        >
+          <Text className="text-white text-base font-semibold">Sign in</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex-row justify-center pb-12">
+        <Text className="text-gray-500 text-sm">Don&apos;t have an account? </Text>
+        <TouchableOpacity onPress={() => router.replace('/(auth)/signup')}>
+          <Text className="text-blue-500 text-sm font-semibold">Sign up</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
