@@ -7,8 +7,11 @@
     "apps/*"
   ],
   "scripts": {
+    "ios": "npm run ios -w apps/mobile",
+    "android": "npm run android -w apps/mobile",
+    "pods": "cd apps/mobile/ios && pod install",
+    "setup": "npm install && cd apps/mobile/ios && pod install",
     "api": "npm run dev -w apps/api",
-    "mobile": "npm run start -w apps/mobile",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "typecheck": "tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p apps/mobile/tsconfig.json"
