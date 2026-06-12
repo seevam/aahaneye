@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function WelcomeScreen() {
@@ -10,9 +10,11 @@ export default function WelcomeScreen() {
 
       {/* Hero */}
       <View className="flex-1 items-center justify-center px-8">
-        <View className="w-24 h-24 rounded-3xl bg-blue-500 items-center justify-center mb-8 shadow-lg">
-          <Text style={{ fontSize: 48 }}>👁️</Text>
-        </View>
+        <Image
+          source={require('../assets/icon.png')}
+          style={{ width: 110, height: 110, borderRadius: 28, marginBottom: 32 }}
+          resizeMode="contain"
+        />
 
         <Text className="text-4xl font-bold text-gray-900 text-center mb-3">
           AahanEye
